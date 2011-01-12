@@ -28,7 +28,7 @@ module RecordSelectHelper
     return html
   end
 
-  # Adds a RecordSelect-based form field. The field submits the record's id using a hidden input.
+ # Adds a RecordSelect-based form field. The field submits the record's id using a hidden input.
   #
   # *Arguments*
   # +name+:: the input name that will be used to submit the selected record's id.
@@ -37,12 +37,15 @@ module RecordSelectHelper
   # *Options*
   # +controller+::  The controller configured to provide the result set. Optional if you have standard resource controllers (e.g. UsersController for the User model), in which case the controller will be inferred from the class of +current+ (the second argument)
   # +params+::      A hash of extra URL parameters
+  #
+  # *HTML Options*
   # +id+::          The id to use for the input. Defaults based on the input's name.
   # +onchange+::    A JavaScript function that will be called whenever something new is selected. It should accept the new id as the first argument, and the new label as the second argument. For example, you could set onchange to be "function(id, label) {alert(id);}", or you could create a JavaScript function somewhere else and set onchange to be "my_function" (without the parantheses!).
-  def record_select_field(name, current, options = {})
+  def record_select_field(name, current, options = {}, html_options = {})
     options[:controller] ||= current.class.to_s.pluralize.underscore
     options[:params] ||= {}
-    options[:id] ||= name.gsub(/[\[\]]/, '_')
+
+    html_options[:id] ||= name.gsub(/[\[\]]/, '_')
 
     controller = assert_controller_responds(options[:controller])
 
@@ -54,8 +57,14 @@ module RecordSelectHelper
 
     url = url_for({:action => :browse, :controller => options[:controller], :escape => false}.merge(options[:params]))
 
-    html = text_field_tag(name, nil, :autocomplete => 'off', :id => options[:id], :class => options[:class], :onfocus => "this.focused=true", :onblur => "this.focused=false")
-    html << javascript_tag("new RecordSelect.Single(#{options[:id].to_json}, #{url.to_json}, {id: #{id.to_json}, label: #{label.to_json}, onchange: #{options[:onchange] || ''.to_json}});")
+    html_options.merge!(
+      :autocomplete => 'off',
+      :onfocus => "this.focused=true",
+      :onblur => "this.focused=false"
+    )
+
+    html = text_field_tag(name, nil, html_options)
+    html << javascript_tag("new RecordSelect.Single(#{html_options[:id].to_json}, #{url.to_json}, {id: #{id.to_json}, label: #{label.to_json}, onchange: #{html_options[:onchange] || ''.to_json}});")
 
     return html
   end
