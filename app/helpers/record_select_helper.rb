@@ -64,7 +64,7 @@ module RecordSelectHelper
     )
 
     html = text_field_tag(name, nil, html_options)
-    html << javascript_tag("new RecordSelect.Single(#{html_options[:id].to_json}, #{url.to_json}, {id: #{id.to_json}, label: #{label.to_json}, onchange: #{html_options[:onchange] || ''.to_json}});")
+    html << javascript_tag("new RecordSelect.Single(#{html_options[:id].to_json}, #{url.to_json}, {id: #{id.to_json}, label: #{label.to_json}, onchange: #{html_options[:onchange] || ''.to_json}, hidden_class:  #{html_options[:hidden_class].to_json || ''.to_json}});")
 
     return html
   end
