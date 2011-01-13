@@ -455,7 +455,6 @@ RecordSelect.Single = RecordSelect.Abstract.extend({
     // unescaped html missing for label
     this.obj.val(label); 
     this.hidden_input.val(id);
-    this.hidden_input.trigger('change');
   }
 });
 

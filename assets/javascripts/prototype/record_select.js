@@ -316,7 +316,6 @@ RecordSelect.Single.prototype = Object.extend(new RecordSelect.Abstract(), {
   set: function(id, label) {
     this.obj.value = label.unescapeHTML();
     this.hidden_input.value = id;
-    this.hidden_input.fire('change');
   }
 });
 
