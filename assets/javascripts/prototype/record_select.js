@@ -279,11 +279,10 @@ RecordSelect.Single.prototype = Object.extend(new RecordSelect.Abstract(), {
     this.container.addClassName('record-select-autocomplete');
 
     // create the hidden input
-    if(this.options.hidden_class) {
-      new Insertion.After(this.obj, '<input type="hidden" name="" value="" class="' + this.options.hidden_class + '" />');
-    } else {
-      new Insertion.After(this.obj, '<input type="hidden" name="" value="" />');
-    }
+    var fragment = $(document.createDocumentFragment());
+    fragment.innerHTML = '<input type="hidden" name="" value="" />';
+    fragment.writeAttribute(this.options);
+    new Insertion.After(this.obj, fragment);
     this.hidden_input = this.obj.next();
 
     // transfer the input name from the text input to the hidden input
@@ -308,6 +307,7 @@ RecordSelect.Single.prototype = Object.extend(new RecordSelect.Abstract(), {
     if (this.options.onchange) this.options.onchange(id, value);
     this.set(id, value);
     this.close();
+    this.hidden_input.fire('change');
   },
 
   /**
@@ -316,7 +316,6 @@ RecordSelect.Single.prototype = Object.extend(new RecordSelect.Abstract(), {
   set: function(id, label) {
     this.obj.value = label.unescapeHTML();
     this.hidden_input.value = id;
-    this.hidden_input.fire('change');
   }
 });
 

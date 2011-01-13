@@ -28,7 +28,7 @@ module RecordSelectHelper
     return html
   end
 
- # Adds a RecordSelect-based form field. The field submits the record's id using a hidden input.
+  # Adds a RecordSelect-based form field. The field submits the record's id using a hidden input.
   #
   # *Arguments*
   # +name+:: the input name that will be used to submit the selected record's id.
@@ -39,21 +39,17 @@ module RecordSelectHelper
   # +params+::      A hash of extra URL parameters
   #
   # *HTML Options*
+  # HTML attributes options hash
+  #
+  # *Hidden HTML Options*
   # +id+::          The id to use for the input. Defaults based on the input's name.
   # +onchange+::    A JavaScript function that will be called whenever something new is selected. It should accept the new id as the first argument, and the new label as the second argument. For example, you could set onchange to be "function(id, label) {alert(id);}", or you could create a JavaScript function somewhere else and set onchange to be "my_function" (without the parantheses!).
-  def record_select_field(name, current, options = {}, html_options = {})
+  # +class+::       The class attribute of the hidden input
+  def record_select_field(name, current, options = {}, html_options = {}, hidden_html_options = {})
     options[:controller] ||= current.class.to_s.pluralize.underscore
     options[:params] ||= {}
 
-    html_options[:id] ||= name.gsub(/[\[\]]/, '_')
-
     controller = assert_controller_responds(options[:controller])
-
-    id = label = ''
-    if current and not current.new_record?
-      id = current.id
-      label = label_for_field(current, controller)
-    end
 
     url = url_for({:action => :browse, :controller => options[:controller], :escape => false}.merge(options[:params]))
 
@@ -62,10 +58,19 @@ module RecordSelectHelper
       :onfocus => "this.focused=true",
       :onblur => "this.focused=false"
     )
-
+    html_options[:id] ||= name.gsub(/[\[\]]/, '_') + '_select'
+    
     html = text_field_tag(name, nil, html_options)
-    html << javascript_tag("new RecordSelect.Single(#{html_options[:id].to_json}, #{url.to_json}, {id: #{id.to_json}, label: #{label.to_json}, onchange: #{html_options[:onchange] || ''.to_json}, hidden_class:  #{html_options[:hidden_class].to_json || ''.to_json}});")
 
+    if current and not current.new_record?
+      hidden_html_options[:id] ||= current.id
+      hidden_html_options[:label] ||= label_for_field(current, controller)
+    end
+    hidden_html_options[:id] ||= name.gsub(/[\[\]]/, '_') + '_hidden'
+
+    html << javascript_tag(
+      "new RecordSelect.Single( #{html_options[:id].to_json}, #{url.to_json}, #{hidden_html_options.to_json});"
+    )
     return html
   end
 

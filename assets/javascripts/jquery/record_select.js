@@ -195,7 +195,7 @@ RecordSelect.Abstract = Class.extend({
     if (RecordSelect.document_loaded) {
       this.onload();
     } else {
-      var _this = this; $(document).ready(function() { _this.onload(); })
+      var _this = this;$(document).ready(function() {_this.onload();})
     }
   },
 
@@ -419,11 +419,9 @@ RecordSelect.Single = RecordSelect.Abstract.extend({
     this.container.addClass('record-select-autocomplete');
 
     // create the hidden input
-    if(this.options.hidden_class) {
-      this.obj.after('<input type="hidden" name="" value="" class="' + this.options.hidden_class + '" />');
-    } else {
-      this.obj.after('<input type="hidden" name="" value="" />');
-    }
+    var fragment = $('<input type="hidden" name="" value="" />');
+    fragment.attr(this.options);
+    this.obj.after(fragment);
     this.hidden_input = this.obj.next();
 
     // transfer the input name from the text input to the hidden input
@@ -448,6 +446,7 @@ RecordSelect.Single = RecordSelect.Abstract.extend({
     if (this.options.onchange) this.options.onchange(id, value);
     this.set(id, value);
     this.close();
+    this.hidden_input.trigger('change');
   },
 
   /**
@@ -457,7 +456,6 @@ RecordSelect.Single = RecordSelect.Abstract.extend({
     // unescaped html missing for label
     this.obj.val(label); 
     this.hidden_input.val(id);
-    this.hidden_input.trigger('change');
   }
 });
 
