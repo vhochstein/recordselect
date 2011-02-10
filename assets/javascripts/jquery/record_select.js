@@ -418,10 +418,9 @@ RecordSelect.Single = RecordSelect.Abstract.extend({
     this.container.addClass('record-select-autocomplete');
 
     // create the hidden input
-    var fragment = $('<input type="hidden" name="" value="" />');
-    fragment.attr(this.options);
-    this.obj.after(fragment);
+    this.obj.after('<input type="hidden" name="" value="" />');
     this.hidden_input = this.obj.next();
+    this.hidden_input.attr(this.options.hidden_html_options);
 
     // transfer the input name from the text input to the hidden input
     this.hidden_input.attr('name', this.obj.attr('name'));

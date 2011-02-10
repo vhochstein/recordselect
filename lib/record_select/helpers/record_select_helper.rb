@@ -37,14 +37,13 @@ module RecordSelectHelper
   # *Options*
   # +controller+::  The controller configured to provide the result set. Optional if you have standard resource controllers (e.g. UsersController for the User model), in which case the controller will be inferred from the class of +current+ (the second argument)
   # +params+::      A hash of extra URL parameters
+  # +onchange+::    A JavaScript function that will be called whenever something new is selected. It should accept the new id as the first argument, and the new label as the second argument. For example, you could set onchange to be "function(id, label) {alert(id);}", or you could create a JavaScript function somewhere else and set onchange to be "my_function" (without the parantheses!).
   #
   # *HTML Options*
-  # HTML attributes options hash
+  # Text input HTML attributes options hash
   #
   # *Hidden HTML Options*
-  # +id+::          The id to use for the input. Defaults based on the input's name.
-  # +onchange+::    A JavaScript function that will be called whenever something new is selected. It should accept the new id as the first argument, and the new label as the second argument. For example, you could set onchange to be "function(id, label) {alert(id);}", or you could create a JavaScript function somewhere else and set onchange to be "my_function" (without the parantheses!).
-  # +class+::       The class attribute of the hidden input
+  # Hidden input HTML attributes options hash
   def record_select_field(name, current, options = {}, html_options = {}, hidden_html_options = {})
     options[:controller] ||= current.class.to_s.pluralize.underscore
     options[:params] ||= {}
@@ -62,14 +61,20 @@ module RecordSelectHelper
     
     html = text_field_tag(name, nil, html_options)
 
+    id = label = ''
     if current and not current.new_record?
-      hidden_html_options[:id] ||= current.id
-      hidden_html_options[:label] ||= label_for_field(current, controller)
+      id = current.id
+      label = label_for_field(current, controller)
     end
-    hidden_html_options[:id] ||= name.gsub(/[\[\]]/, '_') + '_hidden'
 
+    record_select_options = {
+      :id => id,
+      :label => label,
+      :onchange => options[:onchange] || '',
+      :hidden_html_options => hidden_html_options
+    }
     html << javascript_tag(
-      "new RecordSelect.Single( #{html_options[:id].to_json}, #{url.to_json}, #{hidden_html_options.to_json});"
+      "new RecordSelect.Single( #{html_options[:id].to_json}, #{url.to_json}, #{record_select_options.to_json});"
     )
     return html
   end
