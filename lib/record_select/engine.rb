@@ -1,6 +1,6 @@
 module RecordSelect
   class Engine < Rails::Engine
-    initializer('initialize_record_select' ,:after => "initialize_active_scaffold") do
+    initializer('initialize_record_select') do
       ActiveSupport.on_load(:action_controller) do
         require 'record_select/extensions/localization'
         require 'record_select/extensions/routing_mapper'
