@@ -10,9 +10,8 @@ end
 
 Bundler::GemHelper.install_tasks
 require 'rake'
-require './lib/record_select/version.rb'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
