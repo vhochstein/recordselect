@@ -1,30 +1,29 @@
-require 'rake'
-require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
-Bundler::GemHelper.install_tasks
+# -*- encoding: utf-8 -*-
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+require 'record_select/version'
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-end
+Gem::Specification.new do |s|
+  s.name = %q{recordselect_vho}
+  s.version = RecordSelect::Version::STRING
 
-require 'rdoc/task'
-desc 'Generate documentation for the recordselect plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = "Recordselect #{RecordSelect::Version::STRING}"
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-  rdoc.rdoc_files.include('assets/**/*.js')
-end
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.authors = ["Sergio Cambra", "Volker Hochstein", "Lance Ivy"]
+  s.email = %q{activescaffold@googlegroups.com}
+  s.homepage = %q{http://github.com/vhochstein/recordselect}
+  s.summary = %q{RecordSelect widget as a replacement for massive drop down lists}
+  s.description = %q{RecordSelect is a Rails widget to help you pick one record out of many. I designed it as a more usable and performant alternative to generating a massive dropdown list}
+  s.extra_rdoc_files = [
+      "README"
+  ]
+  s.files = Dir["{app,lib}/**/*"] + %w[MIT-LICENSE CHANGELOG README]
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.test_files = [
+      "test/recordselect_test.rb"
+  ]
 
-task :default => :test
+  s.add_development_dependency(%q<shoulda>, [">= 0"])
+  s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
+  s.add_development_dependency(%q<rcov>, [">= 0"])
+  s.add_runtime_dependency(%q<rails>, [">= 3.1.0"])
+end
