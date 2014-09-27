@@ -236,7 +236,7 @@ RecordSelect.Abstract = Class.extend({
    * positions and reveals the recordselect
    */
   show: function() {
-    var offset = this.obj.offset(), top = this.obj.height() + offset.top;
+    var offset = this.obj.offset(), top = this.obj.outerHeight() + offset.top;
     this.container.show();
     this.container.css('left', offset.left);
     if (top + this.container.height() > $(document).height())
